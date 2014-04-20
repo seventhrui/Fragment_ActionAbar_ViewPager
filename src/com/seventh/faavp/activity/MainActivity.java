@@ -15,7 +15,9 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
@@ -27,6 +29,7 @@ public class MainActivity extends FragmentActivity {
 	public final static int TAB_COUNT = 4;
 
 	private ViewPager mViewPager;
+	private ScrollView mscrollview;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class MainActivity extends FragmentActivity {
 		getOverflowMenu();
 	}
 	private void initView(){
+		mscrollview=(ScrollView) findViewById(R.id.mlist);
+		
 		ActionBar actionbar=getActionBar();
 		actionbar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionbar.setDisplayHomeAsUpEnabled(true);
@@ -57,6 +62,7 @@ public class MainActivity extends FragmentActivity {
 	private void initListener(){
 		mViewPager.setOnPageChangeListener(new TestPagerListener());
 	}
+	
 	private void setupTest1(){
 		Tab tab = this.getActionBar().newTab();
 		tab.setContentDescription("Tab 1");
@@ -93,11 +99,13 @@ public class MainActivity extends FragmentActivity {
 		private final static String TAG = "TabListener";
 		@Override
 		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
+			// Tab被选中后用户再次选中该Tab所执行的代码，通常不做任何事情
 			Log.d(TAG, "onTabReselected");
 		}
 
 		@Override
 		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
+			// Tab选中时要执行的代码
 			Log.d(TAG, "onTabSelected()");
 			if (mViewPager != null)
 				mViewPager.setCurrentItem(tab.getPosition());
@@ -105,6 +113,7 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
+			// Tab离开选中状态时执行的代码
 			Log.d(TAG, "onTabUnselected()");
 		}
 	};
@@ -112,10 +121,12 @@ public class MainActivity extends FragmentActivity {
 	class TestPagerListener implements OnPageChangeListener{
 		@Override
 		public void onPageScrollStateChanged(int arg0) {
+			mscrollview.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
 		public void onPageScrolled(int arg0, float arg1, int arg2) {
+		
 		}
 
 		@Override
@@ -158,8 +169,11 @@ public class MainActivity extends FragmentActivity {
 		}
 		else if (item.getTitle().toString().trim().equals("Exit")) {
 		}
-		else if (item.getTitle().toString().trim().equals("app")){
-			//showLeft();
+		else if (item.getTitle().toString().trim().equals("test")){
+			if(mscrollview.getVisibility()==View.INVISIBLE)
+				mscrollview.setVisibility(View.VISIBLE);
+			else 
+				mscrollview.setVisibility(View.INVISIBLE);
 		}
 		return super.onOptionsItemSelected(item);
 	}
